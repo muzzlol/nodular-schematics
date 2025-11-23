@@ -231,7 +231,7 @@ export const SchematicCanvas: FC<{
     // biome-ignore lint/a11y/noStaticElementInteractions: Background interaction
     <div
       onClick={handleCanvasClick}
-      className="relative flex h-screen w-full cursor-crosshair items-center justify-center overflow-hidden bg-background text-foreground"
+      className="relative flex h-screen w-full cursor-crosshair items-center justify-center overflow-hidden text-foreground"
     >
       <svg
         ref={svgRef}

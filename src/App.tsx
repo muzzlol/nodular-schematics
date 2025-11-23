@@ -11,6 +11,8 @@ import {
 import { SettingsDropdown } from "@/components/settings-dropdown"
 import type { SchematicConfig } from "@/types"
 
+import { BackgroundGrid } from "@/components/background-grid"
+
 function AppContent() {
   const [schematicState, setSchematicState] =
     useState<SchematicCanvasRef | null>(null)
@@ -30,6 +32,8 @@ function AppContent() {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-background text-foreground">
+      <BackgroundGrid />
+      
       {/* Schematic Background */}
       <div className="absolute inset-0 z-0">
         <SchematicCanvas onStateChange={setSchematicState} config={config} />
