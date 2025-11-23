@@ -8,10 +8,17 @@ import {
   ThemeToggleButton,
   useThemeTransition
 } from "@/components/theme-toggle-button"
+import { SettingsDropdown } from "@/components/settings-dropdown"
+import type { SchematicConfig } from "@/types"
 
 function AppContent() {
   const [schematicState, setSchematicState] =
     useState<SchematicCanvasRef | null>(null)
+  const [config, setConfig] = useState<SchematicConfig>({
+    minNodes: 20,
+    maxNodes: 35,
+    connectionDensity: 0.5
+  })
   const { theme, setTheme } = useTheme()
   const { startTransition } = useThemeTransition()
 
@@ -25,7 +32,7 @@ function AppContent() {
     <div className="relative min-h-screen w-full overflow-hidden bg-background text-foreground">
       {/* Schematic Background */}
       <div className="absolute inset-0 z-0">
-        <SchematicCanvas onStateChange={setSchematicState} />
+        <SchematicCanvas onStateChange={setSchematicState} config={config} />
       </div>
 
       {/* Theme Toggle */}
@@ -35,6 +42,11 @@ function AppContent() {
           onClick={handleThemeToggle}
           variant="circle-blur"
         />
+      </div>
+
+      {/* Settings Dropdown - Top Center */}
+      <div className="fixed top-2 left-1/2 -translate-x-1/2 z-50">
+        <SettingsDropdown config={config} onConfigChange={setConfig} />
       </div>
 
       {/* Debug Info - Bottom Left */}

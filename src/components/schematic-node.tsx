@@ -15,7 +15,7 @@ export const SchematicNodeRenderer: React.FC<SchematicNodeProps> = ({
 
   const renderContent = () => {
     switch (type) {
-      case NodeType.CONCENTRIC:
+      case "CONCENTRIC":
         return (
           <g>
             <circle
@@ -45,7 +45,7 @@ export const SchematicNodeRenderer: React.FC<SchematicNodeProps> = ({
             )}
           </g>
         )
-      case NodeType.RADIAL: {
+      case "RADIAL": {
         const ticks = 12
         return (
           <g>
@@ -92,7 +92,7 @@ export const SchematicNodeRenderer: React.FC<SchematicNodeProps> = ({
           </g>
         )
       }
-      case NodeType.CROSSHAIR:
+      case "CROSSHAIR":
         return (
           <g>
             <circle
@@ -151,7 +151,7 @@ export const SchematicNodeRenderer: React.FC<SchematicNodeProps> = ({
             />
           </g>
         )
-      case NodeType.GEAR:
+      case "GEAR":
         return (
           <g>
             <circle
@@ -199,7 +199,7 @@ export const SchematicNodeRenderer: React.FC<SchematicNodeProps> = ({
             />
           </g>
         )
-      case NodeType.ORBITAL:
+      case "ORBITAL":
         return (
           <g>
             <circle
@@ -234,7 +234,7 @@ export const SchematicNodeRenderer: React.FC<SchematicNodeProps> = ({
             <circle cx={0} cy={0} r={2} fill={color} />
           </g>
         )
-      case NodeType.SIMPLE:
+      case "SIMPLE":
       default:
         return (
           <g>

@@ -13,10 +13,13 @@ import {
   randomInt,
   randomRange
 } from "@/geometry"
-import { NodeType, type SchematicLink, type SchematicNode } from "@/types"
+import type {
+  NodeType,
+  SchematicConfig,
+  SchematicLink,
+  SchematicNode
+} from "@/types"
 
-const NODE_COUNT_MIN = 20
-const NODE_COUNT_MAX = 35
 const WIDTH = 1600
 const HEIGHT = 900
 
@@ -37,8 +40,12 @@ export interface SchematicCanvasRef {
 }
 
 export const SchematicCanvas: FC<{
+  config?: SchematicConfig
   onStateChange?: (state: SchematicCanvasRef) => void
-}> = ({ onStateChange }) => {
+}> = ({
+  config = { minNodes: 20, maxNodes: 35, connectionDensity: 0.5 },
+  onStateChange
+}) => {
   const [nodes, setNodes] = useState<SchematicNode[]>([])
   const [links, setLinks] = useState<SchematicLink[]>([])
   const [particles, setParticles] = useState<Particle[]>([])
@@ -116,7 +123,7 @@ export const SchematicCanvas: FC<{
     const newNodes: SchematicNode[] = []
     const newLinks: SchematicLink[] = []
 
-    const count = randomInt(NODE_COUNT_MIN, NODE_COUNT_MAX)
+    const count = randomInt(config.minNodes, config.maxNodes)
 
     // 1. Generate Nodes with collision avoidance
     for (let i = 0; i < count; i++) {
@@ -144,12 +151,12 @@ export const SchematicCanvas: FC<{
 
       if (valid) {
         const typeRoll = Math.random()
-        let type = NodeType.SIMPLE
-        if (typeRoll > 0.8) type = NodeType.ORBITAL
-        else if (typeRoll > 0.6) type = NodeType.GEAR
-        else if (typeRoll > 0.4) type = NodeType.CROSSHAIR
-        else if (typeRoll > 0.2) type = NodeType.RADIAL
-        else type = NodeType.CONCENTRIC
+        let type: NodeType = "SIMPLE"
+        if (typeRoll > 0.8) type = "ORBITAL"
+        else if (typeRoll > 0.6) type = "GEAR"
+        else if (typeRoll > 0.4) type = "CROSSHAIR"
+        else if (typeRoll > 0.2) type = "RADIAL"
+        else type = "CONCENTRIC"
 
         newNodes.push({
           id: `node-${i}`,
@@ -170,7 +177,10 @@ export const SchematicCanvas: FC<{
         .map((n, _) => ({ node: n, dist: distance(nodeA, n), id: n.id }))
         .filter((n) => n.id !== nodeA.id)
         .sort((a, b) => a.dist - b.dist)
-        .slice(0, randomInt(1, 3)) // Connect to 1-3 nearest nodes
+        .slice(
+          0,
+          randomInt(1, Math.max(2, Math.ceil(config.connectionDensity * 5)))
+        ) // Connect based on density
 
       neighbors.forEach((neighbor) => {
         // Avoid duplicate links
@@ -194,7 +204,7 @@ export const SchematicCanvas: FC<{
     setLinks(newLinks)
     const id = Date.now().toString().slice(-6)
     onStateChange?.({ nodes: newNodes, links: newLinks, genId: id })
-  }, [onStateChange])
+  }, [onStateChange, config])
 
   const handleCanvasClick = useCallback(
     (e: MouseEvent) => {
@@ -214,7 +224,7 @@ export const SchematicCanvas: FC<{
 
   useEffect(() => {
     generateSchematic()
-  }, [generateSchematic])
+  }, [generateSchematic, config])
 
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: Background interaction
